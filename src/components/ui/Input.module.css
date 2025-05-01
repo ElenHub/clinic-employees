@@ -1,0 +1,13 @@
+.input {
+    border-radius: 16px;
+    padding: 16px;
+    background: var(--white-color);
+    min-width: 496px;
+    column-gap: 16px;
+    display: flex;
+    margin-bottom: 16px;
+}
+
+.input :last-child {
+    margin-bottom: 0;
+}

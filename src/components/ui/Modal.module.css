@@ -1,0 +1,65 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 12;
+}
+
+.modalContainer {
+    border-radius: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 32px;
+    border: 1px solid var(--grey-color);
+    box-shadow: 0 0 11px 0 rgba(17, 17, 17, 0.08);
+    background: var(--white-color);
+    z-index: 15;
+    width: 560px;
+}
+
+.modalContainer.open {
+    animation: anim-lineUp 0.5s ease-out forwards;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modalTitle {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 133%;
+    text-align: center;
+}
+
+.closeIcon {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+    right: 32px;
+    position: absolute;
+}
+
+.modalDescription {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+    text-align: center;
+    margin-top: 16px;
+    margin-bottom: 24px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 16px;
+}

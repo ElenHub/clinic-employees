@@ -1,0 +1,49 @@
+.button {
+  cursor: pointer;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 143%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+button:hover {
+  background: var(--light-blue);
+}
+
+.buttonPrimary {
+  padding: 18px 24px;
+  min-width: 188px;
+  background: var(--blue-color);
+  color: var(--white-color);
+}
+
+.buttonSecondary {
+  padding: 10px 24px;
+  min-width: 101px;
+  color: var(--black-color);
+}
+
+.buttonThird {
+  background: var(--lightest-blue);
+  border-radius: 16px;
+  padding: 18px 24px;
+}
+
+.buttonSmall {
+  min-width: 188px;
+}
+
+.buttonLarge {
+  min-width: 240px;
+}
+
+.buttonMedium {
+  min-width: 496px;
+}
+
+.buttonBig {
+  min-width: 720px;
+}

@@ -1,0 +1,48 @@
+.header {
+  border-bottom: 1px solid #d4d9e4;
+  padding: 24px 20px 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.divisionSelect {
+  display: flex;
+  align-items: center;
+  background: #eaedf0;
+  border-radius: 16px;
+  padding: 16px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  color: #a3a3a3;
+}
+
+.arrowIcon {
+  margin-left: 8px;
+}
+
+.iconsContainer {
+  display: flex;
+  gap: 38px;
+  align-items: center;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.notificationIcon {
+  width: 13px;
+  height: 18px;
+}
+
+.mailIcon {
+  width: 18px;
+  height: 13px;
+}
+
+.userIcon {
+  width: 12px;
+  height: 18px;
+}

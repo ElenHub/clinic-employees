@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --black-color: rgb(34, 34, 34);
+  --white-color: rgb(255, 255, 255);
+  --blue-color:rgb(0, 107, 255);
+  --light-blue:rgb(206, 227, 255);
+  --lightest-blue:rgba(233, 242, 255, 1);
+  --dark-blue:rgba(0, 85, 203, 1);
+  --grey-color:rgb(232, 236, 246);
+  --light-grey: rgba(212, 217, 228, 1);
+  --lightest-grey: rgba(244, 246, 249, 1);
+  --dark-grey: rgba(163, 163, 163, 1);
+  --darkest-grey:rgb(78, 78, 78);
+  --error-color: rgba(238, 68, 68, 1);
+}
+
+
+
+body {
+  font-family: 'Inter Tight', sans-serif;
+}
+
+* {
+  box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; 
+}
+
+body {
+  font-family: 'Inter Tight', sans-serif;
+  background-color: var(--white-color);
+  color: var(--black-color); 
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline; 
+}
+
+input, button {
+  border: none;
+  outline: none;
+}
+
+

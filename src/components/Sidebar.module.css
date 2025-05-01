@@ -1,0 +1,72 @@
+.sidebar {
+    background: var(--lightest-grey);
+    padding: 40px;
+    border-right: 1px solid var(--light-grey);
+    width: 340px;
+    height: 1796px;
+}
+
+.logo {
+    width: 194px;
+    height: 72px;
+}
+
+.sidebarHeader {
+    display: flex;
+    gap: 86px;
+}
+
+.arrow {
+    width: 24px;
+    height: 24px;
+}
+
+.arrowClose {
+    border-width: 1px;
+    gap: 12px;
+    box-shadow: 0 0 11px 0 rgba(17, 17, 17, 0.08);
+    background: var(--grey-color);
+    border: 1px solid var(--light-grey);
+    padding: 8px;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 42px;
+    z-index: 1;
+}
+
+.flexContainer {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between;
+    color: var(--dark-grey);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+
+.arrowUp{
+    margin-left: auto;
+}
+.iconSpacing {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    vertical-align: middle;
+    padding: 12px 16px;
+    border-radius: 16px;
+}
+
+.about {
+    margin-top: 172px;
+}
+
+.structure p:hover {
+    font-weight: 500;
+}

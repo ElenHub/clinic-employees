@@ -1,0 +1,160 @@
+.container {
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 940px;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.5;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--grey-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+th {
+    background-color: var(--grey-color);
+    min-width: 150px;
+    max-width: 300px;
+}
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.iconContainer img {
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.title {
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 122%;
+    margin-top: 48px;
+    margin-bottom: 32px;
+}
+
+.copyIcon {
+    cursor: pointer;
+    margin-left: 13px;
+    margin-bottom: -4px;
+}
+
+.formHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    background: var(--grey-color);
+    border-radius: 8px;
+    padding: 8px;
+    margin: 10px;
+}
+
+.icon:hover {
+    background: var(--light-grey);
+}
+
+.number {
+    margin: 0 10px;
+}
+
+.checkboxGroup {
+    display: flex;
+    column-gap: 48px;
+    align-items: center;
+    margin-bottom: 36px;
+}
+
+.text {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 150%;
+}
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+}
+
+.checkboxLabel input {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.checkboxLabel .text::before {
+    content: "";
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--dark-blue);
+    border-radius: 4px;
+    margin-right: 12px;
+    vertical-align: middle;
+    transition:
+        background-color 0.3s,
+        border-color 0.3s;
+}
+
+.checkboxLabel input:checked + .text::before {
+    background-image: url("../assets/checkmark.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-color: transparent;
+    background-color: var(--dark-blue);
+    display: inline-block;
+}
+
+.iconWithTooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip {
+    position: absolute;
+    top: -4px;
+    transform: translateX(-100%);
+    border: 1px solid var(--light-grey);
+border-radius: 8px;
+box-shadow: 0 0 11px 0 rgba(17, 17, 17, 0.08);
+background: var(--white-color);
+padding: 6px 12px;
+font-weight: 500;
+font-size: 14px;
+line-height: 143%;
+text-align: center;
+color: var(--darkest-grey);
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }

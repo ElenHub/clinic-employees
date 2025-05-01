@@ -13,3 +13,9 @@ deploy_job:
   stage: deploy
   script:
     - docker compose up -d
+    
+build project:
+  image: node:23
+  script:
+    - npm install
+    - npm run build

@@ -58,7 +58,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
           setPositions(positionsData.data.items)
 
         } catch (error) {
-          console.error('Ошибка при загрузке данных:', error)
+          const err = error as Error; 
+          console.error('Ошибка при загрузке данных:', err.message);
+          alert(`Ошибка: ${err.message}`);
         }
       }
 
@@ -156,8 +158,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
 
         closeForm()
       } catch (error) {
-        console.error('Ошибка при сохранении сотрудника:', error.message)
-        alert(`Ошибка: ${error.message}`)
+        const err = error as Error;
+        console.error('Ошибка при сохранении сотрудника:', err.message);
+        alert(`Ошибка: ${err.message}`);
       }
     }
 

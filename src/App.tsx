@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react'
+import { useState, Suspense, lazy } from 'react'
 import EmployeeList from './components/EmployeeList'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
@@ -13,9 +13,9 @@ function App() {
   const [isFormVisible, setFormVisible] = useState(false)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
-  const openForm = (employee = null) => {
-    setSelectedEmployee(employee)
-    setFormVisible(true)
+  const openForm = (employee: Employee | null) => {
+    setSelectedEmployee(employee);
+    setFormVisible(true);
   }
 
   const closeForm = () => {

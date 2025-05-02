@@ -7,7 +7,7 @@ export interface Department {
   label: string
 }
 
-interface Employee {
+export interface Employee {
     id: number;
     name: string;
     surname: string;

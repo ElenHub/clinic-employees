@@ -101,9 +101,10 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       try {
         await employeeStore.deleteEmployee(selectedEmployee.id)
         resetSelectedEmployee()
-      } catch (error) {
-        console.error('Ошибка при удалении сотрудника:', error)
-        alert(`Ошибка: ${error.message}`)
+      }  catch (error) {
+        const err = error as Error; 
+        console.error('Ошибка при удалении сотрудника:', err.message);
+        alert(`Ошибка: ${err.message}`);
       }
     }
 
@@ -148,8 +149,10 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       try {
         await navigator.clipboard.writeText(text)
         alert('Информация скопирована!')
-      } catch (err) {
-        console.error('Ошибка при копировании: ', err)
+      } catch (error) {
+        const err = error as Error; 
+        console.error('Ошибка при копировании:', err.message);
+        alert(`Ошибка: ${err.message}`);
       }
     }
 

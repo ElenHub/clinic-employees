@@ -12,20 +12,10 @@ import arrowRight from '../assets/arrow-right.svg'
 import copyIcon from '../assets/copy.svg'
 import Button from './ui/Button'
 import Spinner from './Spinner';
+import { Employee } from '../stores/utils/types'
 const BlockingModal = lazy(() => import('./BlockingModal'));
 const DismissalModal = lazy(() => import('./DismissalModal'));
 const DeletingModal = lazy(() => import('./DeletingModal'));
-
-interface Employee {
-  id: string
-  name: string
-  surname: string
-  patronymic?: string
-  email: string
-  phone: string
-  status?: { value: string; label: string }
-  is_simple_digital_sign_enabled: boolean
-}
 
 interface EmployeeListProps {
   onAddEmployee: () => void

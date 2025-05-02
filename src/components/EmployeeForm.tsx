@@ -25,7 +25,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
       department: string;
       administrative_position: string;
       medical_position: string;
-      hiredAt: string; // дата как строка
+      hiredAt: string;
       is_simple_digital_sign_enabled: boolean;
   }>({
     name: '',
@@ -100,11 +100,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
     const handleInputChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     ) => {
-      const { name, value } = e.target
-      setFormData({
-        ...formData,
-        [name]: value,
-      })
+      const { name, value } = e.target;
+      setFormData(prev => ({ ...prev, [name]: value } as typeof prev));
     }
 
     const handleSubmit = async (e: React.FormEvent) => {

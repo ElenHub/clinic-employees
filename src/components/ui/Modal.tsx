@@ -10,7 +10,7 @@ interface ModalProps {
   onCancel: () => void
   confirmText: string
   cancelText: string
-  confirmButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement> // или более конкретно
+  confirmButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement> 
   cancelButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>
   showConfirmButton?: boolean
   children?: React.ReactNode

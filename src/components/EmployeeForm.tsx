@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { employeeStore } from '../stores/EmployeeStore'
 import ky from 'ky'
-import { Department, Employee, Position } from '../stores/utils/types'
+import { Department, Employee, FormData, Position } from '../stores/utils/types'
 import styles from './EmployeeForm.module.css'
 import { useNavigate } from 'react-router-dom'
 import arrowBack from '../assets/arrowBack.svg'
@@ -16,29 +16,18 @@ interface EmployeeFormProps {
 
 const EmployeeForm: React.FC<EmployeeFormProps> = observer(
   ({ closeForm, onBack, employee }) => {
-    const [formData, setFormData] = useState<{
-      name: string;
-      surname: string;
-      patronymic?: string;
-      email: string;
-      phone: string;
-      department: string;
-      administrative_position: string;
-      medical_position: string;
-      hiredAt: string;
-      is_simple_digital_sign_enabled: boolean;
-  }>({
-    name: '',
-    surname: '',
-    patronymic: '',
-    email: '',
-    phone: '',
-    department: '',
-    administrative_position: '',
-    medical_position: '',
-    hiredAt: '',
-    is_simple_digital_sign_enabled: false,
-  });
+    const [formData, setFormData] = useState<FormData>({
+      name: '',
+      surname: '',
+      patronymic: '',
+      email: '',
+      phone: '',
+      department: '',
+      administrative_position: '',
+      medical_position: '',
+      hiredAt: '',
+      is_simple_digital_sign_enabled: false,
+    });
 
     const [positions, setPositions] = useState<Position[]>([])
     const [departments, setDepartments] = useState<Department[]>([])
@@ -101,7 +90,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     ) => {
       const { name, value } = e.target;
-      setFormData(prev => ({ ...prev, [name]: value } as typeof prev));
+      setFormData(prev => ({ ...prev, [name]: value } as FormData));
     }
 
     const handleSubmit = async (e: React.FormEvent) => {

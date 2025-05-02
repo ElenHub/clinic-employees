@@ -11,11 +11,11 @@ import arrowLeft from '../assets/arrow-drop-left.svg'
 import arrowRight from '../assets/arrow-right.svg'
 import copyIcon from '../assets/copy.svg'
 import Button from './ui/Button'
-import Spinner from './Spinner';
+import Spinner from './Spinner'
 import { Employee } from '../stores/utils/types'
-const BlockingModal = lazy(() => import('./BlockingModal'));
-const DismissalModal = lazy(() => import('./DismissalModal'));
-const DeletingModal = lazy(() => import('./DeletingModal'));
+const BlockingModal = lazy(() => import('./BlockingModal'))
+const DismissalModal = lazy(() => import('./DismissalModal'))
+const DeletingModal = lazy(() => import('./DeletingModal'))
 
 interface EmployeeListProps {
   onAddEmployee: () => void
@@ -28,11 +28,13 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
     const [isDismissalModalOpen, setDismissalModalOpen] = useState(false)
     const [isDeletingModalOpen, setDeletingModalOpen] = useState(false)
     const [hoveredEmployeeId, setHoveredEmployeeId] = useState(null)
-    const [hoveredIconType, setHoveredIconType] = useState(null) 
+    const [hoveredIconType, setHoveredIconType] = useState(null)
     const [isFormVisible, setFormVisible] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 5
-    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+      null,
+    )
 
     useEffect(() => {
       if (employeeStore.employees.length === 0) {
@@ -71,7 +73,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
         const updatedEmployee = {
           ...selectedEmployee,
           status: { value: 'dismissed', label: 'Уволен' },
-          fired_at: Math.floor(Date.now() / 1000), // Устанавливаем текущее время в качестве даты увольнения
+          firedAt: Math.floor(Date.now() / 1000), // Устанавливаем текущее время в качестве даты увольнения
         }
         employeeStore.updateEmployeeStatus(
           selectedEmployee.id,
@@ -91,10 +93,10 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       try {
         await employeeStore.deleteEmployee(selectedEmployee.id)
         resetSelectedEmployee()
-      }  catch (error) {
-        const err = error as Error; 
-        console.error('Ошибка при удалении сотрудника:', err.message);
-        alert(`Ошибка: ${err.message}`);
+      } catch (error) {
+        const err = error as Error
+        console.error('Ошибка при удалении сотрудника:', err.message)
+        alert(`Ошибка: ${err.message}`)
       }
     }
 
@@ -140,13 +142,16 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
         await navigator.clipboard.writeText(text)
         alert('Информация скопирована!')
       } catch (error) {
-        const err = error as Error; 
-        console.error('Ошибка при копировании:', err.message);
-        alert(`Ошибка: ${err.message}`);
+        const err = error as Error
+        console.error('Ошибка при копировании:', err.message)
+        alert(`Ошибка: ${err.message}`)
       }
     }
 
-    const handleMouseEnter = (employeeId: string | number, iconType: string) => {
+    const handleMouseEnter = (
+      employeeId: string | number,
+      iconType: string,
+    ) => {
       setHoveredEmployeeId(employeeId)
       setHoveredIconType(iconType)
     }
@@ -223,12 +228,13 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
                     </label>
                   </td>
                   <td>
-                    {new Date(employee.hired_at * 1000).toLocaleDateString() ||
-                      'Не указана'}
+                    {employee.hiredAt
+                      ? new Date(employee.hiredAt * 1000).toLocaleDateString()
+                      : 'Не указана'}
                   </td>
                   <td>
-                    {employee.fired_at
-                      ? new Date(employee.fired_at * 1000).toLocaleDateString()
+                    {employee.firedAt
+                      ? new Date(employee.firedAt * 1000).toLocaleDateString()
                       : 'Не указана'}
                   </td>
                   <td>
@@ -308,22 +314,22 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
         </div>
 
         <Suspense fallback={<Spinner />}>
-        <BlockingModal
-          isOpen={isBlockingModalOpen}
-          onClose={resetSelectedEmployee}
-          onConfirm={handleBlockEmployee}
-        />
-        <DismissalModal
-          isOpen={isDismissalModalOpen}
-          onClose={resetSelectedEmployee}
-          onConfirm={handleDismissEmployee}
-        />
-        <DeletingModal
-          isOpen={isDeletingModalOpen}
-          onClose={resetSelectedEmployee}
-          onConfirm={handleDeleteConfirm}
-        />
-         </Suspense>
+          <BlockingModal
+            isOpen={isBlockingModalOpen}
+            onClose={resetSelectedEmployee}
+            onConfirm={handleBlockEmployee}
+          />
+          <DismissalModal
+            isOpen={isDismissalModalOpen}
+            onClose={resetSelectedEmployee}
+            onConfirm={handleDismissEmployee}
+          />
+          <DeletingModal
+            isOpen={isDeletingModalOpen}
+            onClose={resetSelectedEmployee}
+            onConfirm={handleDeleteConfirm}
+          />
+        </Suspense>
       </div>
     )
   },

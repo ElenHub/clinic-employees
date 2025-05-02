@@ -1,8 +1,9 @@
 import { makeAutoObservable, runInAction, toJS } from 'mobx'
 import ky from 'ky'
+import { Employee } from './utils/types'
 
 export class EmployeeStore {
-  employees = []
+  employees: Employee[] = []
   loading = false
   lastPage = 1
   currentPage = 1

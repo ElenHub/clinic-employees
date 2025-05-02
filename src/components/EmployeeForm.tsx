@@ -25,7 +25,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
       department: string;
       administrative_position: string;
       medical_position: string;
-      hiredAt: number;
+      hiredAt: string;
       is_simple_digital_sign_enabled: boolean;
   }>({
     name: '',
@@ -90,7 +90,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
           administrative_position:
             employee.administrative_position?.value || '',
           medical_position: employee.medical_position?.value || '',
-          hired_at: Math.floor(new Date(employee.hiredAt).getTime() / 1000),
+          hiredAt: employee.hiredAt ? new Date(employee.hiredAt * 1000).toISOString().split('T')[0] : '',
           is_simple_digital_sign_enabled:
             employee.is_simple_digital_sign_enabled || false,
         })
@@ -142,7 +142,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
         medical_position: selectedMedicalPosition?.value || '',
         is_simple_digital_sign_enabled:
           formData.is_simple_digital_sign_enabled || false,
-        hired_at: Math.floor(new Date(formData.hiredAt).getTime() / 1000),
+          hired_at: Math.floor(new Date(formData.hiredAt).getTime() / 1000),
         status: { value: 'active', label: 'Активен' },
       }
 

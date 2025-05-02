@@ -32,7 +32,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
     const [isFormVisible, setFormVisible] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 5
-    const [selectedEmployee, setSelectedEmployee] = useState(null)
+    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
     useEffect(() => {
       if (employeeStore.employees.length === 0) {
@@ -183,7 +183,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
               </tr>
             </thead>
             <tbody>
-              {currentEmployees.map((employee) => (
+              {currentEmployees.map((employee: Employee) => (
                 <tr key={employee.id}>
                   <td>
                     <TruncatedText

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import styles from './Button.module.css'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'third'
-  size?: 'small' | 'medium' | 'large' | 'big'
+  variant?: 'primary' | 'secondary' | 'third';
+  size?: 'small' | 'medium' | 'large' | 'big';
 }
 
 const Button: React.FC<ButtonProps> = ({

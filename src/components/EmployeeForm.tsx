@@ -55,7 +55,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
           )
 
           const departmentsData = await departmentsResponse.json() as { data: { items: Department[] } }
-          setPositions(positionsData.data.items)
+          setDepartments(departmentsData.data.items)
 
         } catch (error) {
           const err = error as Error; 

@@ -4,8 +4,10 @@ import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import styles from './App.module.css'
 import Spinner from './components/Spinner';
+import { Employee } from './stores/utils/types';
 
 const EmployeeForm = lazy(() => import('./components/EmployeeForm'));
+
 
 function App() {
   const [isFormVisible, setFormVisible] = useState(false)

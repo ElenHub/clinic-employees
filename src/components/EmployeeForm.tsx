@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { employeeStore } from '../stores/EmployeeStore'
 import ky from 'ky'
-import { Employee } from '../stores/utils/types'
+import { Department, Employee, Position } from '../stores/utils/types'
 import styles from './EmployeeForm.module.css'
 import { useNavigate } from 'react-router-dom'
 import arrowBack from '../assets/arrowBack.svg'
@@ -29,8 +29,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
       is_simple_digital_sign_enabled: false,
     })
 
-    const [positions, setPositions] = useState([])
-    const [departments, setDepartments] = useState([])
+    const [positions, setPositions] = useState<Position[]>([])
+    const [departments, setDepartments] = useState<Department[]>([])
     const navigate = useNavigate()
 
     const handleBack = () => {
@@ -47,14 +47,16 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
           const positionsResponse = await ky.get(
             `${import.meta.env.VITE_API_HOST}/api/v1/positions`,
           )
-          const positionsData = await positionsResponse.json()
+          const positionsData = await positionsResponse.json() as { data: { items: Position[] } }
           setPositions(positionsData.data.items)
 
           const departmentsResponse = await ky.get(
             `${import.meta.env.VITE_API_HOST}/api/v1/departments`,
           )
-          const departmentsData = await departmentsResponse.json()
-          setDepartments(departmentsData.data.items)
+
+          const departmentsData = await departmentsResponse.json() as { data: { items: Department[] } }
+          setPositions(positionsData.data.items)
+
         } catch (error) {
           console.error('Ошибка при загрузке данных:', error)
         }

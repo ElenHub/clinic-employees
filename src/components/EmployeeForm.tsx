@@ -25,7 +25,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
       department: string;
       administrative_position: string;
       medical_position: string;
-      hiredAt: string;
+      hiredAt: number;
       is_simple_digital_sign_enabled: boolean;
   }>({
     name: '',

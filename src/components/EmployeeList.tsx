@@ -61,7 +61,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       }
     }
 
-    const handleDelete = (employee) => {
+    const handleDelete = (employee: Employee | null) => {
       setSelectedEmployee(employee)
       setDeletingModalOpen(true)
     }
@@ -81,7 +81,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       }
     }
 
-    const openDismissalModal = (employee) => {
+    const openDismissalModal = (employee: Employee | null) => {
       setSelectedEmployee(employee)
       setDismissalModalOpen(true)
     }
@@ -98,7 +98,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       }
     }
 
-    const openBlockingModal = (employee) => {
+    const openBlockingModal = (employee: Employee | null) => {
       setSelectedEmployee(employee)
       setBlockingModalOpen(true)
     }
@@ -117,7 +117,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       }
     }
 
-    const handleUnblockEmployee = (employee) => {
+    const handleUnblockEmployee = (employee: Employee | null) => {
       if (employee) {
         const updatedEmployee = {
           ...employee,

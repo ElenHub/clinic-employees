@@ -1,7 +1,5 @@
 import React, { useState, Suspense, lazy } from 'react'
 import EmployeeList from './components/EmployeeList'
-import { Employee } from './stores/utils/types'
-import EmployeeModal from './components/EmployeeModal'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import styles from './App.module.css'
@@ -11,7 +9,7 @@ const EmployeeForm = lazy(() => import('./components/EmployeeForm'));
 
 function App() {
   const [isFormVisible, setFormVisible] = useState(false)
-  const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const openForm = (employee = null) => {
     setSelectedEmployee(employee)

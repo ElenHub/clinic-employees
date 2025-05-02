@@ -1,7 +1,6 @@
 import React, { useEffect, useState, Suspense, lazy } from 'react'
 import { observer } from 'mobx-react-lite'
 import { employeeStore } from '../stores/EmployeeStore'
-import EmployeeForm from './EmployeeForm'
 import TruncatedText from './TruncatedText'
 import styles from './EmployeeList.module.css'
 import edit from '../assets/edit.svg'
@@ -13,9 +12,6 @@ import arrowRight from '../assets/arrow-right.svg'
 import copyIcon from '../assets/copy.svg'
 import Button from './ui/Button'
 import Spinner from './Spinner';
-// import BlockingModal from './BlockingModal'
-// import DismissalModal from './DismissalModal'
-// import DeletingModal from './DeletingModal'
 const BlockingModal = lazy(() => import('./BlockingModal'));
 const DismissalModal = lazy(() => import('./DismissalModal'));
 const DeletingModal = lazy(() => import('./DeletingModal'));
@@ -33,18 +29,16 @@ interface Employee {
 
 interface EmployeeListProps {
   onAddEmployee: () => void
-  onEditEmployee: (employee: Employee) => void
+  onEditEmployee: (employee: Employee | null) => void
 }
 
 const EmployeeList: React.FC<EmployeeListProps> = observer(
   ({ onAddEmployee, onEditEmployee }) => {
-    const [showFired, setShowFired] = useState(false)
-    const [showBlocked, setShowBlocked] = useState(false)
     const [isBlockingModalOpen, setBlockingModalOpen] = useState(false)
     const [isDismissalModalOpen, setDismissalModalOpen] = useState(false)
     const [isDeletingModalOpen, setDeletingModalOpen] = useState(false)
     const [hoveredEmployeeId, setHoveredEmployeeId] = useState(null)
-    const [hoveredIconType, setHoveredIconType] = useState(null) // 'block' или 'unblock'
+    const [hoveredIconType, setHoveredIconType] = useState(null) 
     const [isFormVisible, setFormVisible] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 5
@@ -64,15 +58,6 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage,
     )
-
-    const handleEdit = (employee) => {
-      setSelectedEmployee(employee)
-      setFormVisible(true)
-    }
-
-    const toggleFormVisibility = () => {
-      setFormVisible((prev) => !prev)
-    }
 
     const handlePaginationNext = () => {
       if (currentPage < totalPages) {

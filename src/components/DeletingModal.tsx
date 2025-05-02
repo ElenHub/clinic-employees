@@ -1,6 +1,5 @@
 import React from 'react'
 import Modal from './ui/Modal'
-import { employeeStore } from '../stores/EmployeeStore'
 import { ModalProps } from '../stores/utils/types'
 
 const DeletingModal: React.FC<ModalProps> = ({

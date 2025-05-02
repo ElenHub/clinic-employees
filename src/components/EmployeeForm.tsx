@@ -11,23 +11,34 @@ import Button from './ui/Button'
 interface EmployeeFormProps {
   closeForm: () => void
   onBack?: () => void
-  employee?: Employee
+  employee?: Employee | null;
 }
 
 const EmployeeForm: React.FC<EmployeeFormProps> = observer(
   ({ closeForm, onBack, employee }) => {
-    const [formData, setFormData] = useState<Partial<Employee>>({
-      name: '',
-      surname: '',
-      patronymic: '',
-      email: '',
-      phone: '',
-      department: '',
-      administrative_position: '',
-      medical_position: '',
-      hiredAt: '',
-      is_simple_digital_sign_enabled: false,
-    })
+    const [formData, setFormData] = useState<{
+      name: string;
+      surname: string;
+      patronymic?: string;
+      email: string;
+      phone: string;
+      department: string;
+      administrative_position: string;
+      medical_position: string;
+      hiredAt: string; // дата как строка
+      is_simple_digital_sign_enabled: boolean;
+  }>({
+    name: '',
+    surname: '',
+    patronymic: '',
+    email: '',
+    phone: '',
+    department: '',
+    administrative_position: '',
+    medical_position: '',
+    hiredAt: '',
+    is_simple_digital_sign_enabled: false,
+  });
 
     const [positions, setPositions] = useState<Position[]>([])
     const [departments, setDepartments] = useState<Department[]>([])
@@ -79,9 +90,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
           administrative_position:
             employee.administrative_position?.value || '',
           medical_position: employee.medical_position?.value || '',
-          hiredAt: employee.hired_at
-            ? new Date(employee.hired_at * 1000).toISOString().split('T')[0]
-            : '',
+          hired_at: Math.floor(new Date(employee.hiredAt).getTime() / 1000),
           is_simple_digital_sign_enabled:
             employee.is_simple_digital_sign_enabled || false,
         })

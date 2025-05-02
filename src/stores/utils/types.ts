@@ -14,9 +14,9 @@ export interface Employee {
     patronymic?: string;
     email: string;
     phone: string;
-    department?: Department;
-    administrative_position?: Position;
-    medical_position?: Position;
+    department?: Department | null;
+    administrative_position?: Position | null;
+    medical_position?: Position | null;
     status?: string;
     hiredAt: number;
     firedAt?: number | null;

@@ -135,7 +135,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       setDeletingModalOpen(false)
     }
 
-    const handleCopy = async (text) => {
+    const handleCopy = async (text: string) => {
       try {
         await navigator.clipboard.writeText(text)
         alert('Информация скопирована!')
@@ -146,7 +146,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
       }
     }
 
-    const handleMouseEnter = (employeeId, iconType) => {
+    const handleMouseEnter = (employeeId: string | number, iconType: string) => {
       setHoveredEmployeeId(employeeId)
       setHoveredIconType(iconType)
     }
@@ -218,7 +218,6 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
                       <input
                         type="checkbox"
                         checked={employee.is_simple_digital_sign_enabled}
-                        onChange={() => handleCheckboxChange(employee)}
                       />
                       <span className={styles.text}></span>
                     </label>

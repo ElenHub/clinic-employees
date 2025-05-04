@@ -1,5 +1,9 @@
  # List of clinic employees
 
+ ## Live Demo
+
+You can view the deployed application here: https://clinic-employess.netlify.app/
+
 ## Technologies Used
 
 - **Frontend**: React 18 + TypeScript
@@ -7,6 +11,7 @@
 - **State management**: MobX
 - **Requests**: ky
 - **Working with dates**: date-fns
+- **Deployment**: Netlify
 
 ## Setup .env File
 

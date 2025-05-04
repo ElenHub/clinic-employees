@@ -27,9 +27,10 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
     const [isBlockingModalOpen, setBlockingModalOpen] = useState(false)
     const [isDismissalModalOpen, setDismissalModalOpen] = useState(false)
     const [isDeletingModalOpen, setDeletingModalOpen] = useState(false)
-    const [hoveredEmployeeId, setHoveredEmployeeId] = useState(null)
-    const [hoveredIconType, setHoveredIconType] = useState(null)
-    const [isFormVisible, setFormVisible] = useState(false)
+    const [hoveredEmployeeId, setHoveredEmployeeId] = useState<
+      string | number | null
+    >(null)
+    const [hoveredIconType, setHoveredIconType] = useState<string | null>(null)
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 5
     const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
@@ -73,7 +74,7 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
         const updatedEmployee = {
           ...selectedEmployee,
           status: { value: 'dismissed', label: 'Уволен' },
-          firedAt: Math.floor(Date.now() / 1000), // Устанавливаем текущее время в качестве даты увольнения
+          fired_at: Math.floor(Date.now() / 1000),
         }
         employeeStore.updateEmployeeStatus(
           selectedEmployee.id,
@@ -131,20 +132,19 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
 
     const resetSelectedEmployee = () => {
       setSelectedEmployee(null)
-      setFormVisible(false)
       setBlockingModalOpen(false)
       setDismissalModalOpen(false)
       setDeletingModalOpen(false)
     }
 
-    const handleCopy = async (text: string) => {
+    const handleCopy = async (text: string | null) => {
+      if (!text) return
       try {
         await navigator.clipboard.writeText(text)
         alert('Информация скопирована!')
       } catch (error) {
         const err = error as Error
         console.error('Ошибка при копировании:', err.message)
-        alert(`Ошибка: ${err.message}`)
       }
     }
 
@@ -223,18 +223,18 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
                       <input
                         type="checkbox"
                         checked={employee.is_simple_digital_sign_enabled}
+                        readOnly={true}
                       />
                       <span className={styles.text}></span>
                     </label>
                   </td>
                   <td>
-                    {employee.hiredAt
-                      ? new Date(employee.hiredAt * 1000).toLocaleDateString()
-                      : 'Не указана'}
+                    {new Date(employee.hired_at * 1000).toLocaleDateString() ||
+                      'Не указана'}
                   </td>
                   <td>
-                    {employee.firedAt
-                      ? new Date(employee.firedAt * 1000).toLocaleDateString()
+                    {employee.fired_at
+                      ? new Date(employee.fired_at * 1000).toLocaleDateString()
                       : 'Не указана'}
                   </td>
                   <td>
@@ -294,7 +294,6 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
             className={styles.icon}
             src={arrowLeft}
             onClick={handlePaginationPrevious}
-            disabled={currentPage === 1}
             alt="arrowLeft"
             style={{ pointerEvents: currentPage === 1 ? 'none' : 'auto' }}
           />
@@ -305,7 +304,6 @@ const EmployeeList: React.FC<EmployeeListProps> = observer(
             className={styles.icon}
             src={arrowRight}
             onClick={handlePaginationNext}
-            disabled={currentPage === totalPages}
             alt="arrowRight"
             style={{
               pointerEvents: currentPage === totalPages ? 'none' : 'auto',

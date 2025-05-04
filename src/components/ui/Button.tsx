@@ -1,10 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import styles from './Button.module.css'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'third';
-  size?: 'small' | 'medium' | 'large' | 'big';
+  variant?: 'primary' | 'secondary' | 'third'; 
+  size?: 'small' | 'medium' | 'large' | 'big'; 
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -28,15 +27,6 @@ const Button: React.FC<ButtonProps> = ({
       {children}
     </button>
   )
-}
-
-Button.propTypes = {
-  type: PropTypes.string,
-  className: PropTypes.string,
-  onClick: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'third']),
-  size: PropTypes.oneOf(['small', 'medium', 'large', 'big']),
 }
 
 export default Button

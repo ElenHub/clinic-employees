@@ -1,4 +1,3 @@
-import React from 'react'
 import logo from '../assets/logo.png'
 import arrowClose from '../assets/arrow-close.svg'
 import arrowUp from '../assets/arrow-up.svg'

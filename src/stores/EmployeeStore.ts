@@ -1,9 +1,22 @@
 import { makeAutoObservable, runInAction, toJS } from 'mobx'
 import ky from 'ky'
-import { Employee } from './utils/types'
+import {
+  Employee,
+  Department,
+  Position,
+  UpdateEmployeeData,
+} from './utils/types'
+
+interface ApiResponse<T> {
+  data: T
+}
 
 export class EmployeeStore {
   employees: Employee[] = []
+  roles: any[] = [] 
+  departments: Department[] = []
+  positions: Position[] = []
+
   loading = false
   lastPage = 1
   currentPage = 1
@@ -14,142 +27,290 @@ export class EmployeeStore {
     this.loadEmployeesFromLocalStorage()
   }
 
-  async createUser(newEmployee) {
+  async createUser(newEmployee: {
+    name: string
+    surname: string
+    patronymic: string
+    email: string
+    phone: string
+    department: string | null 
+    administrative_position: string | null 
+    medical_position: string | null 
+    hired_at: number | null
+    is_simple_digital_sign_enabled: boolean 
+  }) {
     try {
       const response = await ky.post(`${this.host}/api/v1/users`, {
         json: newEmployee,
       })
-
       if (!response.ok) {
-        throw new Error(`Ошибка: ${response.status} - ${response.statusText}`)
-      }
+        const errorBody = await response.text()
+        let apiErrorMessage = `Ошибка: ${response.status} - ${response.statusText}`
 
-      const data = await response.json()
-
-      runInAction(() => {
-        if (!this.employees.some((emp) => emp.id === data.data.id)) {
-          this.employees.push(data.data) // Добавляем нового сотрудника
-          this.saveEmployeesToLocalStorage() // Сохраняем в localStorage
+        try {
+          const jsonError = JSON.parse(errorBody)
+          if (jsonError.message) {
+            apiErrorMessage = jsonError.message
+          } else if (jsonError.errors) {
+            apiErrorMessage =
+              'Ошибка валидации: ' +
+              Object.entries(jsonError.errors)
+                .map(
+                  ([field, messages]) =>
+                    `${field}: ${(messages as string[]).join(', ')}`,
+                )
+                .join('; ')
+          }
+        } catch (parseError) {
+          /* ignore */
         }
-        console.log('Сотрудник успешно добавлен:', data)
+        throw new Error(apiErrorMessage)
+      }
+      const responseData = (await response.json()) as ApiResponse<Employee> 
+      runInAction(() => {
+        this.employees.push(responseData.data) 
+        this.saveEmployeesToLocalStorage()
       })
-    } catch (error) {
+      console.log('Сотрудник успешно добавлен:', responseData.data)
+    } catch (error: unknown) {
+      let errorMessage =
+        'Произошла неизвестная ошибка при добавлении сотрудника'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
       console.error('Ошибка при добавлении сотрудника:', error)
+      alert(`Ошибка: ${errorMessage}`)
     }
   }
 
   saveEmployeesToLocalStorage() {
     localStorage.setItem('employees', JSON.stringify(toJS(this.employees)))
-    localStorage.setItem('currentPage', this.currentPage.toString()) // Сохраняем текущую страницу
-    console.log('Сохраненные сотрудники в localStorage:', toJS(this.employees))
+    localStorage.setItem('currentPage', this.currentPage.toString())
   }
 
   loadEmployeesFromLocalStorage() {
-    const localStorageEmployees = localStorage.getItem('employees')
-    const localStorageCurrentPage = localStorage.getItem('currentPage')
+    const localEmployees = localStorage.getItem('employees')
+    const localPage = localStorage.getItem('currentPage')
 
-    if (localStorageEmployees) {
+    if (localEmployees) {
       try {
-        this.employees = JSON.parse(localStorageEmployees)
-        console.log(
-          'Загруженные сотрудники из localStorage:',
-          toJS(this.employees),
-        )
-      } catch (error) {
-        console.error('Ошибка при парсинге сотрудников из localStorage:', error)
+        this.employees = JSON.parse(localEmployees)
+      } catch (e) {
+        console.error('Ошибка при парсинге из localStorage:', e)
       }
     }
-
-    if (localStorageCurrentPage) {
-      this.currentPage = parseInt(localStorageCurrentPage, 10) || 1 // Устанавливаем текущую страницу
+    if (localPage) {
+      this.currentPage = parseInt(localPage, 10) || 1
     }
   }
 
+  // Получение сотрудников с сервера
   async fetchEmployees(
     page = this.currentPage,
     perPage = 5,
     showFired = false,
     showBlocked = false,
   ) {
-    this.loading = true // Устанавливаем статус загрузки
+    this.loading = true
     try {
       const response = await fetch(
         `${this.host}/api/v1/users?per_page=${perPage}&page=${page}${showFired ? '&filter[status]=dismissed' : ''}${showBlocked ? '&filter[status]=blocked' : ''}`,
       )
       if (!response.ok) {
-        throw new Error('Ошибка при загрузке данных')
+        const errorBody = await response.text()
+        let apiErrorMessage = `Ошибка: ${response.status} - ${response.statusText}`
+        try {
+          const jsonError = JSON.parse(errorBody)
+          if (jsonError.message) {
+            apiErrorMessage = jsonError.message
+          } else if (jsonError.errors) {
+            apiErrorMessage =
+              'Ошибка: ' +
+              Object.entries(jsonError.errors)
+                .map(
+                  ([field, messages]) =>
+                    `${field}: ${(messages as string[]).join(', ')}`,
+                )
+                .join('; ')
+          }
+        } catch (parseError) {
+          /* ignore */
+        }
+        throw new Error(apiErrorMessage)
       }
-      const data = await response.json()
+      const data = (await response.json()) as ApiResponse<{
+        items: Employee[]
+        pagination?: any
+      }> 
       runInAction(() => {
         this.employees = data.data.items
-        this.lastPage = Math.min(data.data.pagination.last_page, 10)
-        this.saveEmployeesToLocalStorage() // Сохраняем в localStorage
+        this.lastPage = Math.min(data.data.pagination?.last_page || 1, 10)
+        this.saveEmployeesToLocalStorage()
         this.loading = false
       })
-    } catch (error) {
-      alert(`Ошибка: ${error.message}`)
-      console.error(error)
+    } catch (error: unknown) {
+      let errorMessage = 'Произошла неизвестная ошибка при загрузке сотрудников'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
+      console.error('Ошибка при загрузке сотрудников:', error)
+      alert(`Ошибка: ${errorMessage}`)
       runInAction(() => {
         this.loading = false
       })
     }
   }
 
-  async deleteEmployee(userId) {
+  async deleteEmployee(userId: number) {
     try {
-      await ky.delete(`${this.host}/api/v1/users/${userId}`)
+      const response = await ky.delete(`${this.host}/api/v1/users/${userId}`)
+      if (!response.ok) {
+        const errorBody = await response.text()
+        let apiErrorMessage = `Ошибка: ${response.status} - ${response.statusText}`
+        try {
+          const jsonError = JSON.parse(errorBody)
+          if (jsonError.message) {
+            apiErrorMessage = jsonError.message
+          } else if (jsonError.errors) {
+            apiErrorMessage =
+              'Ошибка: ' +
+              Object.entries(jsonError.errors)
+                .map(
+                  ([field, messages]) =>
+                    `${field}: ${(messages as string[]).join(', ')}`,
+                )
+                .join('; ')
+          }
+        } catch (parseError) {
+          /* ignore */
+        }
+        throw new Error(apiErrorMessage)
+      }
       runInAction(() => {
         this.employees = this.employees.filter((emp) => emp.id !== userId)
-        this.saveEmployeesToLocalStorage() // Обновляем localStorage после удаления
+        this.saveEmployeesToLocalStorage()
       })
-    } catch (error) {
+      console.log(`Сотрудник с ID ${userId} успешно удален.`)
+    } catch (error: unknown) {
+      let errorMessage = 'Произошла неизвестная ошибка при удалении сотрудника'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
       console.error('Ошибка при удалении сотрудника:', error)
+      alert(`Ошибка: ${errorMessage}`)
     }
   }
 
-  async updateEmployeeStatus(userId, newStatus) {
+  // Метод для обновления только статуса
+  updateEmployeeStatus(
+    userId: number,
+    newStatus: { value: string; label: string },
+  ) {
     runInAction(() => {
-      const employeeIndex = this.employees.findIndex((emp) => emp.id === userId)
-      if (employeeIndex !== -1) {
-        this.employees[employeeIndex].status = newStatus // Обновляем статус
-        this.saveEmployeesToLocalStorage() // Сохраняем изменения в локальное хранилище
+      const index = this.employees.findIndex((emp) => emp.id === userId)
+      if (index !== -1) {
+        this.employees[index].status = newStatus
+        if (newStatus.value === 'dismissed') {
+          this.employees[index].fired_at = Math.floor(Date.now() / 1000);
+        }
+        this.saveEmployeesToLocalStorage()
       }
     })
   }
 
-  async updateUser(userId, updatedData) {
+  // Метод для обновления сотрудника
+  async updateUser(userId: number, updatedData: UpdateEmployeeData) {
     try {
       const response = await ky.put(`${this.host}/api/v1/users/${userId}`, {
         json: updatedData,
       })
-
       if (!response.ok) {
-        throw new Error('Ошибка при обновлении данных')
+        const errorBody = await response.text()
+        let apiErrorMessage = `Ошибка: ${response.status} - ${response.statusText}`
+        try {
+          const jsonError = JSON.parse(errorBody)
+          if (jsonError.message) {
+            apiErrorMessage = jsonError.message
+          } else if (jsonError.errors) {
+            apiErrorMessage =
+              'Ошибка: ' +
+              Object.entries(jsonError.errors)
+                .map(
+                  ([field, messages]) =>
+                    `${field}: ${(messages as string[]).join(', ')}`,
+                )
+                .join('; ')
+          }
+        } catch (parseError) {
+          /* ignore */
+        }
+        throw new Error(apiErrorMessage)
       }
-
-      const data = await response.json() // Получаем обновленные данные
-
+      const responseData = (await response.json()) as ApiResponse<Employee> 
       runInAction(() => {
-        this.employees = this.employees.map(
-          (emp) => (emp.id === userId ? { ...emp, ...data.data } : emp), // Обновляем данные
+        this.employees = this.employees.map((emp) =>
+          emp.id === userId ? { ...emp, ...responseData.data } : emp,
         )
-        this.saveEmployeesToLocalStorage() // Сохранение обновленных данных в Local Storage
+        this.saveEmployeesToLocalStorage()
       })
-    } catch (error) {
+      console.log('Сотрудник успешно обновлен:', responseData.data)
+    } catch (error: unknown) {
+      let errorMessage =
+        'Произошла неизвестная ошибка при обновлении сотрудника'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
       console.error('Ошибка при обновлении сотрудника:', error)
+      alert(`Ошибка: ${errorMessage}`)
     }
   }
 
   async getRoles() {
     try {
       const response = await ky.get('https://api.mock.sb21.ru/api/v1/roles')
-      const data = await response.json()
+      if (!response.ok) {
+        const errorBody = await response.text()
+        let apiErrorMessage = `Ошибка: ${response.status} - ${response.statusText}`
+        try {
+          const jsonError = JSON.parse(errorBody)
+          if (jsonError.message) {
+            apiErrorMessage = jsonError.message
+          } else if (jsonError.errors) {
+            apiErrorMessage =
+              'Ошибка: ' +
+              Object.entries(jsonError.errors)
+                .map(
+                  ([field, messages]) =>
+                    `${field}: ${(messages as string[]).join(', ')}`,
+                )
+                .join('; ')
+          }
+        } catch (parseError) {
+          /* ignore */
+        }
+        throw new Error(apiErrorMessage)
+      }
+      const data = (await response.json()) as ApiResponse<{ items: any[] }>
       runInAction(() => {
         this.roles = data.data.items
-        console.log('Полученные роли:', this.roles)
       })
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMessage = 'Произошла неизвестная ошибка при получении ролей'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
       console.error('Ошибка при получении ролей:', error)
+      alert(`Ошибка: ${errorMessage}`)
     }
   }
 
@@ -158,28 +319,87 @@ export class EmployeeStore {
       const response = await ky.get(
         'https://api.mock.sb21.ru/api/v1/departments',
       )
-      const data = await response.json()
+      if (!response.ok) {
+        const errorBody = await response.text()
+        let apiErrorMessage = `Ошибка: ${response.status} - ${response.statusText}`
+        try {
+          const jsonError = JSON.parse(errorBody)
+          if (jsonError.message) {
+            apiErrorMessage = jsonError.message
+          } else if (jsonError.errors) {
+            apiErrorMessage =
+              'Ошибка: ' +
+              Object.entries(jsonError.errors)
+                .map(
+                  ([field, messages]) =>
+                    `${field}: ${(messages as string[]).join(', ')}`,
+                )
+                .join('; ')
+          }
+        } catch (parseError) {
+          /* ignore */
+        }
+        throw new Error(apiErrorMessage)
+      }
+      const data = (await response.json()) as ApiResponse<{
+        items: Department[]
+      }>
       runInAction(() => {
         this.departments = data.data.items
-        console.log('Полученные подразделения:', this.departments)
       })
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMessage =
+        'Произошла неизвестная ошибка при получении подразделений'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
       console.error('Ошибка при получении подразделений:', error)
+      alert(`Ошибка: ${errorMessage}`)
     }
   }
+
   async getPositions() {
     try {
       const response = await ky.get('https://api.mock.sb21.ru/api/v1/positions')
-      const data = await response.json()
+      if (!response.ok) {
+        const errorBody = await response.text()
+        let apiErrorMessage = `Ошибка: ${response.status} - ${response.statusText}`
+        try {
+          const jsonError = JSON.parse(errorBody)
+          if (jsonError.message) {
+            apiErrorMessage = jsonError.message
+          } else if (jsonError.errors) {
+            apiErrorMessage =
+              'Ошибка: ' +
+              Object.entries(jsonError.errors)
+                .map(
+                  ([field, messages]) =>
+                    `${field}: ${(messages as string[]).join(', ')}`,
+                )
+                .join('; ')
+          }
+        } catch (parseError) {
+          /* ignore */
+        }
+        throw new Error(apiErrorMessage)
+      }
+      const data = (await response.json()) as ApiResponse<{ items: Position[] }>
       runInAction(() => {
         this.positions = data.data.items
-        console.log('Полученные должности:', this.positions)
       })
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMessage = 'Произошла неизвестная ошибка при получении должностей'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
       console.error('Ошибка при получении должностей:', error)
+      alert(`Ошибка: ${errorMessage}`)
     }
   }
 }
 
-export const employeeStore = new EmployeeStore();
-
+export const employeeStore = new EmployeeStore()

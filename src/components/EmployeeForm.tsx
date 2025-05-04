@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { employeeStore } from '../stores/EmployeeStore'
 import ky from 'ky'
-import { Department, Employee, FormData, Position } from '../stores/utils/types'
+import { Department, Employee, Position } from '../stores/utils/types'
 import styles from './EmployeeForm.module.css'
 import { useNavigate } from 'react-router-dom'
 import arrowBack from '../assets/arrowBack.svg'
@@ -11,12 +11,23 @@ import Button from './ui/Button'
 interface EmployeeFormProps {
   closeForm: () => void
   onBack?: () => void
-  employee?: Employee | null;
+  employee?: Employee | null
 }
 
 const EmployeeForm: React.FC<EmployeeFormProps> = observer(
   ({ closeForm, onBack, employee }) => {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<{
+      name: string
+      surname: string
+      patronymic?: string
+      email: string
+      phone: string
+      department: string
+      administrative_position: string
+      medical_position: string
+      hiredAt: string
+      is_simple_digital_sign_enabled: boolean
+    }>({
       name: '',
       surname: '',
       patronymic: '',
@@ -27,7 +38,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
       medical_position: '',
       hiredAt: '',
       is_simple_digital_sign_enabled: false,
-    });
+    })
 
     const [positions, setPositions] = useState<Position[]>([])
     const [departments, setDepartments] = useState<Department[]>([])
@@ -35,7 +46,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
 
     const handleBack = () => {
       if (onBack) {
-        onBack() 
+        onBack()
       } else {
         navigate('/')
       }
@@ -47,20 +58,23 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
           const positionsResponse = await ky.get(
             `${import.meta.env.VITE_API_HOST}/api/v1/positions`,
           )
-          const positionsData = await positionsResponse.json() as { data: { items: Position[] } }
+          const positionsData = (await positionsResponse.json()) as {
+            data: { items: Position[] }
+          }
           setPositions(positionsData.data.items)
 
           const departmentsResponse = await ky.get(
             `${import.meta.env.VITE_API_HOST}/api/v1/departments`,
           )
 
-          const departmentsData = await departmentsResponse.json() as { data: { items: Department[] } }
+          const departmentsData = (await departmentsResponse.json()) as {
+            data: { items: Department[] }
+          }
           setDepartments(departmentsData.data.items)
-
         } catch (error) {
-          const err = error as Error; 
-          console.error('Ошибка при загрузке данных:', err.message);
-          alert(`Ошибка: ${err.message}`);
+          const err = error as Error
+          console.error('Ошибка при загрузке данных:', err.message)
+          alert(`Ошибка: ${err.message}`)
         }
       }
 
@@ -79,7 +93,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
           administrative_position:
             employee.administrative_position?.value || '',
           medical_position: employee.medical_position?.value || '',
-          hiredAt: employee.hiredAt ? new Date(employee.hiredAt * 1000).toISOString().split('T')[0] : '',
+          hiredAt: employee.hired_at
+            ? new Date(employee.hired_at * 1000).toISOString().split('T')[0]
+            : '',
           is_simple_digital_sign_enabled:
             employee.is_simple_digital_sign_enabled || false,
         })
@@ -89,8 +105,8 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
     const handleInputChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     ) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({ ...prev, [name]: value } as FormData));
+      const { name, value } = e.target
+      setFormData((prev) => ({ ...prev, [name]: value }) as typeof prev)
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -131,7 +147,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
         medical_position: selectedMedicalPosition?.value || '',
         is_simple_digital_sign_enabled:
           formData.is_simple_digital_sign_enabled || false,
-          hired_at: Math.floor(new Date(formData.hiredAt).getTime() / 1000),
+        hired_at: Math.floor(new Date(formData.hiredAt).getTime() / 1000),
         status: { value: 'active', label: 'Активен' },
       }
 
@@ -153,9 +169,9 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
 
         closeForm()
       } catch (error) {
-        const err = error as Error;
-        console.error('Ошибка при сохранении сотрудника:', err.message);
-        alert(`Ошибка: ${err.message}`);
+        const err = error as Error
+        console.error('Ошибка при сохранении сотрудника:', err.message)
+        alert(`Ошибка: ${err.message}`)
       }
     }
 
@@ -202,7 +218,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
               <select
                 className={styles.inputField}
                 name={name}
-                value={formData[name] || ''}
+                value={(formData as any)[name]}
                 onChange={handleInputChange}
                 required={required}
               >
@@ -222,7 +238,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = observer(
                 className={styles.inputField}
                 type={type}
                 name={name}
-                value={formData[name] || ''}
+                value={(formData as any)[name]}
                 onChange={handleInputChange}
                 required={required}
               />

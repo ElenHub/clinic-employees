@@ -2,6 +2,7 @@ import React from 'react'
 import close from '../../assets/close.svg'
 import styles from './Modal.module.css'
 import Button from './Button'
+import { ButtonStyleProps } from '../../stores/utils/types'
 
 interface ModalProps {
   title: string
@@ -10,8 +11,8 @@ interface ModalProps {
   onCancel: () => void
   confirmText: string
   cancelText: string
-  confirmButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement> 
-  cancelButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>
+  confirmButtonProps?: ButtonStyleProps;
+  cancelButtonProps?: ButtonStyleProps;
   showConfirmButton?: boolean
   children?: React.ReactNode
 }

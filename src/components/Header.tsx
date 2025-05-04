@@ -1,4 +1,3 @@
-import React from 'react'
 import arrowDown from '../assets/arrow-drop-down.svg'
 import notification from '../assets/notification.svg'
 import mail from '../assets/mail.svg'
